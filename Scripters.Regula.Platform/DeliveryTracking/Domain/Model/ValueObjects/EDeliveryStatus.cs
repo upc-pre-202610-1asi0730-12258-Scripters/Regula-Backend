@@ -4,5 +4,6 @@ public enum EDeliveryStatus
 {
     Pending,
     OnRoute,
-    Delivered
+    Delivered,
+    NotDelivered
 }

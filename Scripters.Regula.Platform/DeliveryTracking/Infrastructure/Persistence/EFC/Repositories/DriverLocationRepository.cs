@@ -14,4 +14,12 @@ public class DriverLocationRepository(AppDbContext context)
         return await context.Set<DriverLocation>()
             .FirstOrDefaultAsync(l => l.DeliveryId == deliveryId, cancellationToken);
     }
+
+    public async Task<IEnumerable<DriverLocation>> FindByDeliveryIdsAsync(IEnumerable<int> deliveryIds, CancellationToken cancellationToken = default)
+    {
+        var ids = deliveryIds.ToList();
+        return await context.Set<DriverLocation>()
+            .Where(l => ids.Contains(l.DeliveryId))
+            .ToListAsync(cancellationToken);
+    }
 }

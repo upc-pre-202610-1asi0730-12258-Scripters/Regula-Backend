@@ -22,6 +22,10 @@ public class Delivery : IAuditableEntity
 
     public int ItemCount { get; private set; }
 
+    public string Cargo { get; private set; } = string.Empty;
+
+    public string Destination { get; private set; } = string.Empty;
+
     public DateTime ScheduledTime { get; private set; }
 
     public string? DeliveredAt { get; private set; }
@@ -34,12 +38,14 @@ public class Delivery : IAuditableEntity
     {
     }
 
-    public Delivery(int driverId, int responsibleId, int vehicleId, int itemCount, DateTime scheduledTime)
+    public Delivery(int driverId, int responsibleId, int vehicleId, int itemCount, string cargo, string destination, DateTime scheduledTime)
     {
         DriverId = driverId;
         ResponsibleId = responsibleId;
         VehicleId = vehicleId;
         ItemCount = itemCount;
+        Cargo = cargo;
+        Destination = destination;
         ScheduledTime = scheduledTime;
         Status = EDeliveryStatus.Pending;
     }
@@ -50,6 +56,7 @@ public class Delivery : IAuditableEntity
         {
             (EDeliveryStatus.Pending, EDeliveryStatus.OnRoute) => true,
             (EDeliveryStatus.OnRoute, EDeliveryStatus.Delivered) => true,
+            (EDeliveryStatus.OnRoute, EDeliveryStatus.NotDelivered) => true,
             _ => false
         };
     }

@@ -28,4 +28,12 @@ public class DeliveryRepository(AppDbContext context)
             .Include(d => d.Vehicle)
             .FirstOrDefaultAsync(d => d.Id == id, cancellationToken);
     }
+
+    public async Task<IEnumerable<Delivery>> FindAllWithDetailsAsync(CancellationToken cancellationToken = default)
+    {
+        return await context.Set<Delivery>()
+            .Include(d => d.Responsible)
+            .Include(d => d.Vehicle)
+            .ToListAsync(cancellationToken);
+    }
 }

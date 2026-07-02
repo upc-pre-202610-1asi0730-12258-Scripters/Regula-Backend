@@ -33,4 +33,12 @@ public class DeliveryQueryService(
 
         return Result<Delivery>.Success(delivery);
     }
+
+    public async Task<Result<IEnumerable<Delivery>>> Handle(
+        GetAllDistributorDeliveriesQuery query,
+        CancellationToken cancellationToken = default)
+    {
+        var deliveries = await deliveryRepository.FindAllWithDetailsAsync(cancellationToken);
+        return Result<IEnumerable<Delivery>>.Success(deliveries);
+    }
 }

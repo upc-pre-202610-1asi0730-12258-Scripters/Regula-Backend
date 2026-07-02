@@ -9,4 +9,6 @@ public interface IDeliveryRepository : IBaseRepository<Delivery>
     Task<IEnumerable<Delivery>> FindByScheduledDateAndStatusAsync(DateOnly date, EDeliveryStatus status, CancellationToken cancellationToken = default);
 
     Task<Delivery?> FindByIdWithDetailsAsync(int id, CancellationToken cancellationToken = default);
+
+    Task<IEnumerable<Delivery>> FindAllWithDetailsAsync(CancellationToken cancellationToken = default);
 }
