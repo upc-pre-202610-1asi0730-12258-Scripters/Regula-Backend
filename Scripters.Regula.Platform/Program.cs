@@ -27,6 +27,15 @@ using Scripters.Regula.Platform.Shared.Infrastructure.Persistence.EFC.Repositori
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+    });
+});
 builder.Services.AddControllers();
 
 // Configure Database
@@ -103,6 +112,7 @@ var app = builder.Build();
 // Configure the HTTP request pipeline
     app.UseSwagger();
     app.UseSwaggerUI();
+app.UseCors();
 app.UseHttpsRedirection();
 
 app.UseAuthentication();

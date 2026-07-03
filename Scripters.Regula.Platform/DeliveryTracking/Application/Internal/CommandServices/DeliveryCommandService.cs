@@ -35,4 +35,23 @@ public class DeliveryCommandService(
 
         return Result<Delivery>.Success(delivery);
     }
+
+    public async Task<Result<Delivery>> Handle(
+        CreateDistributorDeliveryCommand command,
+        CancellationToken cancellationToken = default)
+    {
+        var delivery = new Delivery(
+            command.DriverId,
+            command.ResponsibleId,
+            command.VehicleId,
+            command.ItemCount,
+            command.Cargo,
+            command.Destination,
+            command.ScheduledTime);
+
+        await deliveryRepository.AddAsync(delivery, cancellationToken);
+        await unitOfWork.CompleteAsync(cancellationToken);
+
+        return Result<Delivery>.Success(delivery);
+    }
 }
