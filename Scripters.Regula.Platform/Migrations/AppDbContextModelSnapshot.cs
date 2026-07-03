@@ -591,7 +591,7 @@ namespace Scripters.Regula.Platform.Migrations
                             Id = 1,
                             DeliveryId = 1,
                             DriverId = 101,
-                            LastUpdated = new DateTime(2026, 7, 2, 7, 26, 6, 837, DateTimeKind.Utc).AddTicks(5065),
+                            LastUpdated = new DateTime(2026, 7, 3, 4, 23, 21, 468, DateTimeKind.Utc).AddTicks(1448),
                             Latitude = -12.0464,
                             Longitude = -77.0428
                         },
@@ -600,7 +600,7 @@ namespace Scripters.Regula.Platform.Migrations
                             Id = 2,
                             DeliveryId = 2,
                             DriverId = 102,
-                            LastUpdated = new DateTime(2026, 7, 2, 7, 26, 6, 837, DateTimeKind.Utc).AddTicks(5756),
+                            LastUpdated = new DateTime(2026, 7, 3, 4, 23, 21, 468, DateTimeKind.Utc).AddTicks(2137),
                             Latitude = -12.06,
                             Longitude = -77.037499999999994
                         },
@@ -609,7 +609,7 @@ namespace Scripters.Regula.Platform.Migrations
                             Id = 3,
                             DeliveryId = 4,
                             DriverId = 104,
-                            LastUpdated = new DateTime(2026, 7, 2, 7, 26, 6, 837, DateTimeKind.Utc).AddTicks(5757),
+                            LastUpdated = new DateTime(2026, 7, 3, 4, 23, 21, 468, DateTimeKind.Utc).AddTicks(2138),
                             Latitude = -12.055,
                             Longitude = -77.040000000000006
                         });
