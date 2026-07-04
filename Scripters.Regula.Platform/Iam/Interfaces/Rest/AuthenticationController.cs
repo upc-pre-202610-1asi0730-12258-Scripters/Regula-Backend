@@ -1,6 +1,7 @@
 using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
 using Scripters.Regula.Platform.Iam.Application.Internal.CommandServices;
+using Scripters.Regula.Platform.Iam.Infrastructure.Pipeline.Middleware.Attributes;
 using Scripters.Regula.Platform.Iam.Interfaces.Rest.Resources;
 using Scripters.Regula.Platform.Iam.Interfaces.Rest.Transform;
 
@@ -11,6 +12,7 @@ namespace Scripters.Regula.Platform.Iam.Interfaces.Rest;
 [Produces(MediaTypeNames.Application.Json)]
 public class AuthenticationController(IUserCommandService userCommandService) : ControllerBase
 {
+    [AllowAnonymous]
     [HttpPost("sign-up")]
     public async Task<IActionResult> SignUp([FromBody] SignUpResource resource)
     {
@@ -19,6 +21,7 @@ public class AuthenticationController(IUserCommandService userCommandService) : 
         return Ok(new { message = "User created successfully" });
     }
     
+    [AllowAnonymous]
     [HttpPost("sign-in")]
         public async Task<IActionResult> SignIn([FromBody] SignInResource resource)
         {
