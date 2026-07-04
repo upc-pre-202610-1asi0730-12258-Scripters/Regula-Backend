@@ -58,7 +58,7 @@ public class InventoriesController(
             this, result, _errorLocalizer, _problemDetailsFactory,
             movement => Created(
                 $"/api/v1/inventories/{inventoryId}/company-movements",
-                InventoryItemFromEntityAssembler.ToCompanyMovementItem(movement)));
+                InventoryCompanyMovementItemResourceFromEntityAssembler.ToResourceFromEntity(movement)));
     }
 
     [HttpGet("{inventoryId:long}/company-movements")]
@@ -76,7 +76,7 @@ public class InventoriesController(
         var movements = await inventoryQueryService.Handle(
             new GetCompanyMovementsByInventoryIdQuery(inventoryId, type), cancellationToken);
 
-        return Ok(movements.Select(InventoryItemFromEntityAssembler.ToCompanyMovementItem));
+        return Ok(movements.Select(InventoryCompanyMovementItemResourceFromEntityAssembler.ToResourceFromEntity));
     }
 
     [HttpPost("{inventoryId:long}/distributor-movements")]
@@ -94,7 +94,7 @@ public class InventoriesController(
             this, result, _errorLocalizer, _problemDetailsFactory,
             movement => Created(
                 $"/api/v1/inventories/{inventoryId}/distributor-movements",
-                InventoryItemFromEntityAssembler.ToDistributorMovementItem(movement)));
+                InventoryDistributorMovementItemResourceFromEntityAssembler.ToResourceFromEntity(movement)));
     }
 
     [HttpGet("{inventoryId:long}/distributor-movements")]
@@ -111,11 +111,12 @@ public class InventoriesController(
         var movements = await inventoryQueryService.Handle(
             new GetDistributorMovementsByInventoryIdQuery(inventoryId, type), cancellationToken);
 
-        return Ok(movements.Select(InventoryItemFromEntityAssembler.ToDistributorMovementItem));
+        return Ok(movements.Select(InventoryDistributorMovementItemResourceFromEntityAssembler.ToResourceFromEntity));
     }
 
     [HttpGet("{inventoryId:long}/stock")]
     [SwaggerOperation(Summary = "Get stock", OperationId = "GetStock")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Stock levels", typeof(IEnumerable<GasCylinderStockResource>))]
     public async Task<IActionResult> GetStock(
         [FromRoute] long inventoryId,
         CancellationToken cancellationToken)
@@ -123,6 +124,6 @@ public class InventoriesController(
         var stock = await inventoryQueryService.Handle(
             new GetStockByInventoryIdQuery(inventoryId), cancellationToken);
 
-        return Ok(stock.Select(InventoryItemFromEntityAssembler.ToStockItem));
+        return Ok(stock.Select(GasCylinderStockResourceFromEntityAssembler.ToResourceFromEntity));
     }
 }
