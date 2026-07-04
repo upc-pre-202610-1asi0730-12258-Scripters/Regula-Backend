@@ -8,6 +8,8 @@ public interface IInventoryQueryService
 {
     Task<Inventory?> Handle(GetInventoryByIdQuery query, CancellationToken cancellationToken);
 
+    Task<Inventory?> Handle(GetInventoryByOwnerProfileIdQuery query, CancellationToken cancellationToken);
+
     Task<IEnumerable<CompanyMovement>> Handle(
         GetCompanyMovementsByInventoryIdQuery query,
         CancellationToken cancellationToken);

@@ -394,9 +394,9 @@ namespace Scripters.Regula.Platform.Migrations
                 columns: new[] { "id", "created_at", "delivery_id", "driver_id", "eta", "last_updated", "latitude", "longitude", "updated_at" },
                 values: new object[,]
                 {
-                    { 1, null, 1, 101, null, new DateTime(2026, 7, 3, 4, 23, 21, 468, DateTimeKind.Utc).AddTicks(1448), -12.0464, -77.0428, null },
-                    { 2, null, 2, 102, null, new DateTime(2026, 7, 3, 4, 23, 21, 468, DateTimeKind.Utc).AddTicks(2137), -12.06, -77.037499999999994, null },
-                    { 3, null, 4, 104, null, new DateTime(2026, 7, 3, 4, 23, 21, 468, DateTimeKind.Utc).AddTicks(2138), -12.055, -77.040000000000006, null }
+                    { 1, null, 1, 101, null, new DateTime(2026, 7, 4, 9, 41, 8, 782, DateTimeKind.Utc).AddTicks(2415), -12.0464, -77.0428, null },
+                    { 2, null, 2, 102, null, new DateTime(2026, 7, 4, 9, 41, 8, 782, DateTimeKind.Utc).AddTicks(3137), -12.06, -77.037499999999994, null },
+                    { 3, null, 4, 104, null, new DateTime(2026, 7, 4, 9, 41, 8, 782, DateTimeKind.Utc).AddTicks(3138), -12.055, -77.040000000000006, null }
                 });
 
             migrationBuilder.CreateIndex(

@@ -1,4 +1,6 @@
 using System.Net.Mime;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using Scripters.Regula.Platform.InventoryManagement.Application.CommandServices;
@@ -26,6 +28,28 @@ public class InventoriesController(
 {
     private readonly IStringLocalizer<InventoryManagementMessages> _errorLocalizer = errorLocalizer;
     private readonly ProblemDetailsFactory _problemDetailsFactory = problemDetailsFactory;
+
+    [HttpGet("me")]
+    [Authorize]
+    [SwaggerOperation(
+        Summary = "Get the authenticated user's own distributor inventory",
+        Description = "Resolves the inventory via the ProfileId (NameIdentifier claim) carried in the JWT — no inventoryId needed.",
+        OperationId = "GetMyInventory")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Inventory", typeof(InventoryResource))]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "Inventory not found for this user")]
+    public async Task<IActionResult> GetMyInventory(CancellationToken cancellationToken)
+    {
+        var profileIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (!long.TryParse(profileIdClaim, out var profileId))
+            return Unauthorized();
+
+        var inventory = await inventoryQueryService.Handle(
+            new GetInventoryByOwnerProfileIdQuery(profileId, EInventoryType.Distributor), cancellationToken);
+
+        return InventoryManagementActionResultAssembler.ToActionResultFromGetInventoryByIdResult(
+            this, inventory, _errorLocalizer, _problemDetailsFactory,
+            found => Ok(InventoryResourceFromEntityAssembler.ToResourceFromEntity(found)));
+    }
 
     [HttpGet("{inventoryId:long}")]
     [SwaggerOperation(Summary = "Get inventory by id", OperationId = "GetInventoryById")]

@@ -16,11 +16,13 @@ public class InventoryRepository(AppDbContext context)
         EInventoryType inventoryType,
         CancellationToken cancellationToken)
     {
+        var ownerProfileId = new ProfileId(profileId);
+
         return await Context.Set<Inventory>()
             .Include(i => i.StockItems)
             .Include(i => i.Movements)
             .FirstOrDefaultAsync(
-                i => i.OwnerProfileId.Value == profileId && i.InventoryType == inventoryType,
+                i => i.OwnerProfileId == ownerProfileId && i.InventoryType == inventoryType,
                 cancellationToken);
     }
 

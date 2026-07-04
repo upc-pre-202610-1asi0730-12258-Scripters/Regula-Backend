@@ -1,7 +1,9 @@
-﻿using Scripters.Regula.Platform.Iam.Application.Commands;
+﻿using Cortex.Mediator;
+using Scripters.Regula.Platform.Iam.Application.Commands;
 using Scripters.Regula.Platform.Iam.Application.Internal.OutboundServices;
 using Scripters.Regula.Platform.Iam.Domain.Model.Aggregates;
 using Scripters.Regula.Platform.Iam.Domain.Repositories;
+using Scripters.Regula.Platform.Shared.Domain.Model.Events;
 using Scripters.Regula.Platform.Shared.Domain.Repositories;
 
 namespace Scripters.Regula.Platform.Iam.Application.Internal.CommandServices;
@@ -10,7 +12,8 @@ public class UserCommandService(
     IUserRepository userRepository,
     IHashingService hashingService,
     ITokenService tokenService, 
-    IUnitOfWork unitOfWork)
+    IUnitOfWork unitOfWork,
+    IMediator mediator)
     : IUserCommandService
 {
     public async Task Handle(SignUpCommand command)
@@ -26,6 +29,12 @@ public class UserCommandService(
         
         await userRepository.AddAsync(newUser);
         await unitOfWork.CompleteAsync();
+
+        // newUser.Id solo existe después de CompleteAsync (autoincrement).
+        // Se publica después del commit del User: InventoryManagement crea su
+        // propio Inventory en una transacción separada al reaccionar a esto
+        // (consistencia eventual, no atómica con la creación del User).
+        await mediator.PublishAsync(new UserRegisteredEvent(newUser.Id));
     }
     
  

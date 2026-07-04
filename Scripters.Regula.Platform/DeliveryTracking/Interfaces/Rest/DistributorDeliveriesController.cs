@@ -12,13 +12,14 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace Scripters.Regula.Platform.DeliveryTracking.Interfaces.Rest;
 
 [ApiController]
+[Route("api/v1/distributor-deliveries")]
 [Produces("application/json")]
 public class DistributorDeliveriesController(
     IDeliveryQueryService deliveryQueryService,
     IDeliveryCommandService deliveryCommandService,
     IDriverLocationRepository driverLocationRepository) : ControllerBase
 {
-    [HttpGet("distributorDeliveries")]
+    [HttpGet]
     [SwaggerOperation(
         Summary = "Get all distributor deliveries",
         Description = "Returns all deliveries with responsible, vehicle and location details for the distributor frontend.",
@@ -40,7 +41,7 @@ public class DistributorDeliveriesController(
         return Ok(resources);
     }
 
-    [HttpPost("distributorDeliveries")]
+    [HttpPost]
     [SwaggerOperation(
         Summary = "Create a distributor delivery",
         Description = "Creates a new delivery with status Pending.",
@@ -63,10 +64,10 @@ public class DistributorDeliveriesController(
         var deliveryResource = DistributorDeliveryResourceFromEntityAssembler
             .ToResourceFromEntity(delivery.Value!, null);
 
-        return Created($"/distributorDeliveries/{delivery.Value!.Id}", deliveryResource);
+        return Created($"/api/v1/distributor-deliveries/{delivery.Value!.Id}", deliveryResource);
     }
 
-    [HttpPatch("distributorDeliveries/{id:int}/status")]
+    [HttpPatch("{id:int}/status")]
     [SwaggerOperation(
         Summary = "Update delivery status",
         Description = "Updates the status of a delivery. Valid transitions: Pending→OnRoute, OnRoute→Delivered, OnRoute→NotDelivered.",
@@ -106,7 +107,7 @@ public class DistributorDeliveriesController(
         return Ok(deliveryResource);
     }
 
-    [HttpGet("distributorDeliverers")]
+    [HttpGet("/api/v1/distributor-deliverers")]
     [SwaggerOperation(
         Summary = "Get all distributor deliverers",
         Description = "Returns all delivery responsibles with their current vehicle and GPS location for the distributor frontend.",
