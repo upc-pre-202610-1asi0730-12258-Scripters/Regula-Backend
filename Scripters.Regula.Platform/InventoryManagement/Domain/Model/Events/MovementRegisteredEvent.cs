@@ -8,11 +8,11 @@ public class MovementRegisteredEvent(
     ECylinderType cylinderType,
     EMovementType movementType,
     Quantity      quantity,
-    ProfileId     profileId) : IEvent
+    UserId        userId) : IEvent
 {
     public int           MovementId   { get; } = movementId;
     public ECylinderType CylinderType { get; } = cylinderType;
     public EMovementType MovementType { get; } = movementType;
     public Quantity      Quantity     { get; } = quantity;
-    public ProfileId     ProfileId    { get; } = profileId;
+    public UserId        UserId       { get; } = userId;
 }

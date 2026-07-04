@@ -11,8 +11,8 @@ public static class ModelBuilderExtensions
     private static readonly ValueConverter<ProviderName, string> ProviderNameConverter =
         new(v => v.Value, v => new ProviderName(v));
 
-    private static readonly ValueConverter<ProfileId, long> ProfileIdConverter =
-        new(v => v.Value, v => new ProfileId(v));
+    private static readonly ValueConverter<UserId, int> UserIdConverter =
+        new(v => v.Value, v => new UserId(v));
 
     private static readonly ValueConverter<Quantity, int> QuantityConverter =
         new(v => v.Value, v => new Quantity(v));
@@ -37,9 +37,9 @@ public static class ModelBuilderExtensions
             entity.Property(x => x.Id)
                 .ValueGeneratedOnAdd();
 
-            entity.Property(x => x.OwnerProfileId)
-                .HasConversion(ProfileIdConverter)
-                .HasColumnName("owner_profile_id")
+            entity.Property(x => x.UserId)
+                .HasConversion(UserIdConverter)
+                .HasColumnName("user_id")
                 .IsRequired();
 
             entity.Property(x => x.InventoryType)
@@ -50,7 +50,7 @@ public static class ModelBuilderExtensions
 
             entity.HasIndex(x => new
             {
-                x.OwnerProfileId,
+                x.UserId,
                 x.InventoryType
             }).IsUnique();
 
@@ -138,9 +138,9 @@ public static class ModelBuilderExtensions
                 .HasMaxLength(100)
                 .IsRequired();
 
-            entity.Property(x => x.ProfileId)
-                .HasConversion(ProfileIdConverter)
-                .HasColumnName("profile_id")
+            entity.Property(x => x.UserId)
+                .HasConversion(UserIdConverter)
+                .HasColumnName("user_id")
                 .IsRequired();
         });
 

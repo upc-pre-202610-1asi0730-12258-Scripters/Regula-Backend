@@ -18,7 +18,7 @@ public static class CreateCompanyMovementCommandFromResourceAssembler
             Enum.Parse<EMovementType>(resource.MovementType, ignoreCase: true),
             Enum.Parse<ECylinderType>(resource.CylinderType, ignoreCase: true),
             resource.Quantity,
-            resource.ProfileId,
+            resource.UserId,
             resource.ProviderName,
             resource.Destination,
             resource.MovementReason,

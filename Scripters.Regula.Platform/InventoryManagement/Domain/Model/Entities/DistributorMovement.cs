@@ -14,8 +14,8 @@ public class DistributorMovement : Movement
         Quantity       quantity,
         ProviderName   providerName,
         EOutboundType? outboundType,
-        ProfileId      profileId)
-        : base(movementType, cylinderType, quantity, providerName, profileId)
+        UserId      userId)
+        : base(movementType, cylinderType, quantity, providerName, userId)
     {
         OutboundType = outboundType;
     }

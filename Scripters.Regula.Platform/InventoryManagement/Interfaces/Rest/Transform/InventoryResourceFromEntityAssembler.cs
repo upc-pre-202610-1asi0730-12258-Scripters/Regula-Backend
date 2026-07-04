@@ -13,7 +13,7 @@ public static class InventoryResourceFromEntityAssembler
 
         return new InventoryResource(
             entity.Id,
-            entity.OwnerProfileId.Value,
+            entity.UserId.Value,
             entity.InventoryType.ToString(),
             entity.StockSummary.TotalAvailable());
     }

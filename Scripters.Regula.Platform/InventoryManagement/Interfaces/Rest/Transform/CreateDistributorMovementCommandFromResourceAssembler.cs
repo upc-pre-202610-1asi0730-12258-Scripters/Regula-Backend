@@ -22,7 +22,7 @@ public static class CreateDistributorMovementCommandFromResourceAssembler
             Enum.Parse<EMovementType>(resource.MovementType, ignoreCase: true),
             Enum.Parse<ECylinderType>(resource.CylinderType, ignoreCase: true),
             resource.Quantity,
-            resource.ProfileId,
+            resource.UserId,
             resource.ProviderName,
             outboundType);
     }

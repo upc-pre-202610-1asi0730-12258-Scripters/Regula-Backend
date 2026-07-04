@@ -11,17 +11,13 @@ namespace Scripters.Regula.Platform.InventoryManagement.Infrastructure.Persisten
 public class InventoryRepository(AppDbContext context)
     : BaseRepository<Inventory>(context), IInventoryRepository
 {
-    public async Task<Inventory?> FindByOwnerProfileIdAsync(
-        long profileId,
-        EInventoryType inventoryType,
+    public async Task<Inventory?> FindByUserIdAsync(
+        UserId userId,
         CancellationToken cancellationToken)
     {
         return await Context.Set<Inventory>()
             .Include(i => i.StockItems)
-            .Include(i => i.Movements)
-            .FirstOrDefaultAsync(
-                i => i.OwnerProfileId.Value == profileId && i.InventoryType == inventoryType,
-                cancellationToken);
+            .FirstOrDefaultAsync(i => i.UserId == userId, cancellationToken);
     }
 
     public async Task<Inventory?> FindSummaryByIdAsync(int id, CancellationToken cancellationToken)

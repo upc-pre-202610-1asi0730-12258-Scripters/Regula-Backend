@@ -13,6 +13,11 @@ public class InventoryQueryService(IInventoryRepository inventoryRepository) : I
         return await inventoryRepository.FindSummaryByIdAsync((int)query.InventoryId, cancellationToken);
     }
 
+    public async Task<Inventory?> Handle(GetInventoryByUserIdQuery query, CancellationToken cancellationToken)
+    {
+        return await inventoryRepository.FindByUserIdAsync(query.UserId, cancellationToken);
+    }
+
     public async Task<IEnumerable<CompanyMovement>> Handle(
         GetCompanyMovementsByInventoryIdQuery query,
         CancellationToken cancellationToken)

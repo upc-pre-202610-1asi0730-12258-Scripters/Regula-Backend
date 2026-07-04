@@ -23,8 +23,7 @@ public interface IInventoryRepository : IBaseRepository<Inventory>
         int inventoryId,
         CancellationToken cancellationToken);
 
-    Task<Inventory?> FindByOwnerProfileIdAsync(
-        long profileId,
-        EInventoryType inventoryType,
+    Task<Inventory?> FindByUserIdAsync(
+        UserId userId,
         CancellationToken cancellationToken);
 }

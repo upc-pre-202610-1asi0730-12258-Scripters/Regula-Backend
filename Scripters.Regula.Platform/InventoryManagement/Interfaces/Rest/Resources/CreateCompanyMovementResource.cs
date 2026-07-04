@@ -4,7 +4,7 @@ public record CreateCompanyMovementResource(
     string MovementType,
     string CylinderType,
     int Quantity,
-    long ProfileId,
+    int UserId,
     string? ProviderName,
     string Destination,
     string MovementReason,

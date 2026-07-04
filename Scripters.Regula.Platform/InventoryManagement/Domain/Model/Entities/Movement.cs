@@ -10,7 +10,7 @@ public abstract partial class Movement
     {
         Timestamp    = DateTime.UtcNow;
         Quantity     = new Quantity(1);
-        ProfileId    = new ProfileId(0);
+        UserId    = new UserId(0);
         ProviderName = new ProviderName(string.Empty);
     }
 
@@ -19,14 +19,14 @@ public abstract partial class Movement
         ECylinderType cylinderType,
         Quantity      quantity,
         ProviderName  providerName,
-        ProfileId     profileId)
+        UserId     userId)
     {
         Timestamp    = DateTime.UtcNow;
         MovementType = movementType;
         CylinderType = cylinderType;
         Quantity     = quantity;
         ProviderName = providerName;
-        ProfileId    = profileId;
+        UserId    = userId;
     }
 
     public int Id { get; private set; }
@@ -36,7 +36,7 @@ public abstract partial class Movement
     public ECylinderType CylinderType { get; private set; }
     public Quantity      Quantity     { get; private set; }
     public ProviderName  ProviderName  { get; private set; }
-    public ProfileId     ProfileId    { get; private set; }
+    public UserId UserId { get; private set; }
 
     public bool IsEntry() => MovementType == EMovementType.Entry;
 

@@ -6,6 +6,6 @@ namespace Scripters.Regula.Platform.InventoryManagement.Interfaces.Rest.Resource
 /// <remarks>Kevin Lopez</remarks>
 public record InventoryResource(
     int Id,
-    long OwnerProfileId,
+    int UserId,
     string InventoryType,
     int TotalAvailable);

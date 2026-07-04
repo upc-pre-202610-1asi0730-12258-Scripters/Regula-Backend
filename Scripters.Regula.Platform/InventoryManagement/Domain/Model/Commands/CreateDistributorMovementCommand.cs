@@ -7,6 +7,6 @@ public record CreateDistributorMovementCommand(
     EMovementType  MovementType,
     ECylinderType  CylinderType,
     int            Quantity,
-    long           ProfileId,
+    int            UserId,
     string?        ProviderName,
     EOutboundType? OutboundType);

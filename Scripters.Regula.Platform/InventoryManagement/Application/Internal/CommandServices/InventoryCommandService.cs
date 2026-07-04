@@ -46,7 +46,7 @@ public class InventoryCommandService(
             new Destination(command.Destination),
             new MovementReason(command.MovementReason),
             new Observation(command.Observation),
-            new ProfileId(command.ProfileId));
+            new UserId(command.UserId));
 
         try
         {
@@ -104,7 +104,7 @@ public class InventoryCommandService(
             new Quantity(command.Quantity),
             providerResult.Value!,
             command.OutboundType,
-            new ProfileId(command.ProfileId));
+            new UserId(command.UserId));
 
         try
         {

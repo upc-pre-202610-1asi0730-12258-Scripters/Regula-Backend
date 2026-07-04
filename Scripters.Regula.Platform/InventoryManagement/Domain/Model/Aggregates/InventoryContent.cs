@@ -14,7 +14,7 @@ public partial class Inventory
         MovementHistory.Add(movement);
         ApplyStockChange(movement);
         return new MovementRegisteredEvent(
-            movement.Id, movement.CylinderType, movement.MovementType, movement.Quantity, movement.ProfileId);
+            movement.Id, movement.CylinderType, movement.MovementType, movement.Quantity, movement.UserId);
     }
 
     public MovementRegisteredEvent RegisterDistributorMovement(DistributorMovement movement)
@@ -23,7 +23,7 @@ public partial class Inventory
         MovementHistory.Add(movement);
         ApplyStockChange(movement);
         return new MovementRegisteredEvent(
-            movement.Id, movement.CylinderType, movement.MovementType, movement.Quantity, movement.ProfileId);
+            movement.Id, movement.CylinderType, movement.MovementType, movement.Quantity, movement.UserId);
     }
 
     public StockIncreasedEvent IncreaseStock(ECylinderType cylinderType, Quantity qty)

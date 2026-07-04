@@ -19,8 +19,8 @@ public class CompanyMovement : Movement
         Destination    destination,
         MovementReason movementReason,
         Observation    observation,
-        ProfileId      profileId)
-        : base(movementType, cylinderType, quantity, providerName, profileId)
+        UserId      userId)
+        : base(movementType, cylinderType, quantity, providerName, userId)
     {
         Destination    = destination;
         MovementReason = movementReason;

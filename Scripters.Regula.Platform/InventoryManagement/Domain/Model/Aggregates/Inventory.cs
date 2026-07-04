@@ -7,15 +7,15 @@ public partial class Inventory
 {
     public Inventory()
     {
-        OwnerProfileId  = new ProfileId(0);
+        UserId          = new UserId(0);
         InventoryType   = EInventoryType.Company;
         StockSummary    = new StockSummary();
         MovementHistory = new MovementHistory();
     }
 
-    public Inventory(ProfileId ownerProfileId, EInventoryType inventoryType)
+    public Inventory(UserId userId, EInventoryType inventoryType)
     {
-        OwnerProfileId  = ownerProfileId;
+        UserId          = userId;
         InventoryType   = inventoryType;
         StockSummary    = new StockSummary();
         MovementHistory = new MovementHistory();
@@ -23,7 +23,7 @@ public partial class Inventory
 
     public int Id { get; private set; }
 
-    public ProfileId OwnerProfileId { get; private set; }
+    public UserId UserId { get; private set; }
 
     public EInventoryType InventoryType { get; private set; }
 
