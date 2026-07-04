@@ -1,13 +1,12 @@
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Localization;
+using Microsoft.OpenApi;
 using Scripters.Regula.Platform.CommercialManagement.Application.CommandServices;
 using Scripters.Regula.Platform.CommercialManagement.Application.Internal.CommandServices;
-using Scripters.Regula.Platform.CommercialManagement.Domain.Repositories;
-using Scripters.Regula.Platform.CommercialManagement.Infrastructure.Persistence.EFC.Repositories;
 using Scripters.Regula.Platform.CommercialManagement.Application.Internal.QueryServices;
 using Scripters.Regula.Platform.CommercialManagement.Application.QueryServices;
+using Scripters.Regula.Platform.CommercialManagement.Domain.Repositories;
+using Scripters.Regula.Platform.CommercialManagement.Infrastructure.Persistence.EFC.Repositories;
 using Scripters.Regula.Platform.DeliveryTracking.Application.CommandServices;
 using Scripters.Regula.Platform.DeliveryTracking.Application.Internal.CommandServices;
 using Scripters.Regula.Platform.DeliveryTracking.Application.Internal.QueryServices;
@@ -19,27 +18,39 @@ using Scripters.Regula.Platform.Iam.Application.Internal.OutboundServices;
 using Scripters.Regula.Platform.Iam.Domain.Repositories;
 using Scripters.Regula.Platform.Iam.Infrastructure.Hashing.BCrypt;
 using Scripters.Regula.Platform.Iam.Infrastructure.Persistence.EFC.Repositories;
-using Scripters.Regula.Platform.Iam.Infrastructure.Tokens.JWT;
+using Scripters.Regula.Platform.Iam.Infrastructure.Pipeline.Middleware.Extensions;
+using Scripters.Regula.Platform.Iam.Infrastructure.Tokens.Jwt.Configuration;
+using Scripters.Regula.Platform.Iam.Infrastructure.Tokens.Jwt.Services;
+using Scripters.Regula.Platform.InventoryManagement.Application.CommandServices;
+using Scripters.Regula.Platform.InventoryManagement.Application.Internal.CommandServices;
+using Scripters.Regula.Platform.InventoryManagement.Application.Internal.QueryServices;
+using Scripters.Regula.Platform.InventoryManagement.Application.QueryServices;
+using Scripters.Regula.Platform.InventoryManagement.Domain.Repositories;
+using Scripters.Regula.Platform.InventoryManagement.Infrastructure.Persistence.EntityFrameworkCore.Repositories;
+using Scripters.Regula.Platform.InventoryManagement.Resources;
 using Scripters.Regula.Platform.Shared.Domain.Repositories;
+using Scripters.Regula.Platform.Shared.Infrastructure.Interfaces.AspNetCore.Configuration;
 using Scripters.Regula.Platform.Shared.Infrastructure.Persistence.EFC.Configuration;
 using Scripters.Regula.Platform.Shared.Infrastructure.Persistence.EFC.Repositories;
+using Scripters.Regula.Platform.Shared.Resources;
+using Scripters.Regula.Platform.Shared.Resources.Errors;
+using ProblemDetailsFactory = Scripters.Regula.Platform.Shared.Interfaces.Rest.ProblemDetails.ProblemDetailsFactory;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container
+builder.Services.AddRouting(options => options.LowercaseUrls = true);
+builder.Services.AddControllers(options =>
+    options.Conventions.Add(new KebabCaseRouteNamingConvention()));
+
+builder.Services.AddProblemDetails();
+
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(policy =>
-    {
-        policy.AllowAnyOrigin()
+    options.AddPolicy("AllowAllPolicy",
+        policy => policy.AllowAnyOrigin()
             .AllowAnyMethod()
-            .AllowAnyHeader();
-    });
+            .AllowAnyHeader());
 });
-builder.Services.AddControllers();
-
-// Configure Database
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddDbContext<AppDbContext>((serviceProvider, options) =>
 {
@@ -58,6 +69,41 @@ builder.Services.AddDbContext<AppDbContext>((serviceProvider, options) =>
     if (builder.Environment.IsDevelopment())
         options.EnableSensitiveDataLogging();
 });
+
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+builder.Services.AddSingleton<IStringLocalizer<ErrorMessages>, StringLocalizer<ErrorMessages>>();
+builder.Services.AddSingleton<IStringLocalizer<CommonMessages>, StringLocalizer<CommonMessages>>();
+builder.Services.AddSingleton<IStringLocalizer<InventoryManagementMessages>, StringLocalizer<InventoryManagementMessages>>();
+
+builder.Services.AddSingleton<ProblemDetailsFactory>();
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Scripters.Regula.Platform",
+        Version = "v1",
+        Description = "Regula Platform API"
+    });
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please enter token",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "bearer"
+    });
+    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+        { [new OpenApiSecuritySchemeReference("Bearer", document)] = [] });
+    options.EnableAnnotations();
+});
+
+// Shared Bounded Context
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 // Delivery Tracking Bounded Context
 builder.Services.AddScoped<IDeliveryRepository, DeliveryRepository>();
 builder.Services.AddScoped<IDriverLocationRepository, DriverLocationRepository>();
@@ -73,57 +119,36 @@ builder.Services.AddScoped<ICommercialDebtPaymentRepository, CommercialDebtPayme
 builder.Services.AddScoped<ICommercialDailySaleRepository, CommercialDailySaleRepository>();
 builder.Services.AddScoped<IDailySaleCommandService, DailySaleCommandService>();
 builder.Services.AddScoped<IDailySaleQueryService, DailySaleQueryService>();
+
 // IAM Bounded Context
+builder.Services.Configure<TokenSettings>(builder.Configuration.GetSection("TokenSettings"));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserCommandService, UserCommandService>();
 builder.Services.AddScoped<IHashingService, HashingService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 
-// Shared Bounded Context
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-// Configure Authentication
-var jwtSecret = builder.Configuration["JwtSettings:Secret"];
-
-if (!string.IsNullOrWhiteSpace(jwtSecret))
-{
-    builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-        .AddJwtBearer(options =>
-        {
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
-                ValidAudience = builder.Configuration["JwtSettings:Audience"],
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret))
-            };
-        });
-}
-
-// Swagger/OpenAPI
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+// Inventory Management Bounded Context
+builder.Services.AddScoped<IInventoryRepository, InventoryRepository>();
+builder.Services.AddScoped<IInventoryCommandService, InventoryCommandService>();
+builder.Services.AddScoped<IInventoryQueryService, InventoryQueryService>();
 
 var app = builder.Build();
-
-// Configure the HTTP request pipeline
-    app.UseSwagger();
-    app.UseSwaggerUI();
-app.UseCors();
-app.UseHttpsRedirection();
-
-app.UseAuthentication();
-app.UseAuthorization();
-
-app.MapControllers();
 
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     context.Database.Migrate();
 }
-//ejecutar
+
+app.UseSwagger();
+app.UseSwaggerUI();
+
+app.UseCors("AllowAllPolicy");
+
+app.UseRequestAuthorization();
+
+app.UseHttpsRedirection();
+
+app.MapControllers();
+
 app.Run();
