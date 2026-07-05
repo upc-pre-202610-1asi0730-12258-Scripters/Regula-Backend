@@ -2,6 +2,14 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Scripters.Regula.Platform.Billing.Application.CommandServices;
+using Scripters.Regula.Platform.Billing.Application.Internal.CommandServices;
+using Scripters.Regula.Platform.Billing.Application.Internal.OutboundServices;
+using Scripters.Regula.Platform.Billing.Application.Internal.QueryServices;
+using Scripters.Regula.Platform.Billing.Application.QueryServices;
+using Scripters.Regula.Platform.Billing.Domain.Repositories;
+using Scripters.Regula.Platform.Billing.Infrastructure.ExternalServices.StripeGateway;
+using Scripters.Regula.Platform.Billing.Infrastructure.Persistence.EFC.Repositories;
 using Scripters.Regula.Platform.CommercialManagement.Application.CommandServices;
 using Scripters.Regula.Platform.CommercialManagement.Application.Internal.CommandServices;
 using Scripters.Regula.Platform.CommercialManagement.Domain.Repositories;
@@ -113,6 +121,12 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 // Shared Bounded Context
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<ProblemDetailsFactory>();
+
+// Billing Bounded Context (Stripe subscriptions)
+builder.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
+builder.Services.AddScoped<IStripeService, StripeService>();
+builder.Services.AddScoped<ISubscriptionCommandService, SubscriptionCommandService>();
+builder.Services.AddScoped<ISubscriptionQueryService, SubscriptionQueryService>();
 
 // Configure Authentication
 var jwtSecret = builder.Configuration["JwtSettings:Secret"];

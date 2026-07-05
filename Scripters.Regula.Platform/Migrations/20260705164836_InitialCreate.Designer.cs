@@ -11,7 +11,7 @@ using Scripters.Regula.Platform.Shared.Infrastructure.Persistence.EFC.Configurat
 namespace Scripters.Regula.Platform.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260704113514_InitialCreate")]
+    [Migration("20260705164836_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -21,6 +21,56 @@ namespace Scripters.Regula.Platform.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "10.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
+
+            modelBuilder.Entity("Scripters.Regula.Platform.Billing.Domain.Model.Aggregates.Subscription", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    b.Property<DateTimeOffset?>("CreatedAt")
+                        .HasColumnType("datetime")
+                        .HasColumnName("created_at");
+
+                    b.Property<DateTime?>("CurrentPeriodEnd")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("current_period_end");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("status");
+
+                    b.Property<string>("StripeCustomerId")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("stripe_customer_id");
+
+                    b.Property<string>("StripeSubscriptionId")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("stripe_subscription_id");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("datetime")
+                        .HasColumnName("updated_at");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_subscriptions");
+
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasDatabaseName("i_x_subscriptions_user_id");
+
+                    b.ToTable("subscriptions", (string)null);
+                });
 
             modelBuilder.Entity("Scripters.Regula.Platform.CommercialManagement.Domain.Model.Aggregates.CommercialCustomer", b =>
                 {
@@ -594,7 +644,7 @@ namespace Scripters.Regula.Platform.Migrations
                             Id = 1,
                             DeliveryId = 1,
                             DriverId = 101,
-                            LastUpdated = new DateTime(2026, 7, 4, 11, 35, 13, 366, DateTimeKind.Utc).AddTicks(2918),
+                            LastUpdated = new DateTime(2026, 7, 5, 16, 48, 35, 456, DateTimeKind.Utc).AddTicks(5989),
                             Latitude = -12.0464,
                             Longitude = -77.0428
                         },
@@ -603,7 +653,7 @@ namespace Scripters.Regula.Platform.Migrations
                             Id = 2,
                             DeliveryId = 2,
                             DriverId = 102,
-                            LastUpdated = new DateTime(2026, 7, 4, 11, 35, 13, 366, DateTimeKind.Utc).AddTicks(3707),
+                            LastUpdated = new DateTime(2026, 7, 5, 16, 48, 35, 456, DateTimeKind.Utc).AddTicks(6866),
                             Latitude = -12.06,
                             Longitude = -77.037499999999994
                         },
@@ -612,7 +662,7 @@ namespace Scripters.Regula.Platform.Migrations
                             Id = 3,
                             DeliveryId = 4,
                             DriverId = 104,
-                            LastUpdated = new DateTime(2026, 7, 4, 11, 35, 13, 366, DateTimeKind.Utc).AddTicks(3708),
+                            LastUpdated = new DateTime(2026, 7, 5, 16, 48, 35, 456, DateTimeKind.Utc).AddTicks(6868),
                             Latitude = -12.055,
                             Longitude = -77.040000000000006
                         });

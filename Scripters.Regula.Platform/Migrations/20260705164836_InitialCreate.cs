@@ -87,6 +87,26 @@ namespace Scripters.Regula.Platform.Migrations
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "subscriptions",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    user_id = table.Column<long>(type: "bigint", nullable: false),
+                    stripe_customer_id = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
+                    stripe_subscription_id = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true),
+                    status = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false),
+                    current_period_end = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    created_at = table.Column<DateTimeOffset>(type: "datetime", nullable: true),
+                    updated_at = table.Column<DateTimeOffset>(type: "datetime", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("p_k_subscriptions", x => x.id);
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "users",
                 columns: table => new
                 {
@@ -394,9 +414,9 @@ namespace Scripters.Regula.Platform.Migrations
                 columns: new[] { "id", "created_at", "delivery_id", "driver_id", "eta", "last_updated", "latitude", "longitude", "updated_at" },
                 values: new object[,]
                 {
-                    { 1, null, 1, 101, null, new DateTime(2026, 7, 4, 11, 35, 13, 366, DateTimeKind.Utc).AddTicks(2918), -12.0464, -77.0428, null },
-                    { 2, null, 2, 102, null, new DateTime(2026, 7, 4, 11, 35, 13, 366, DateTimeKind.Utc).AddTicks(3707), -12.06, -77.037499999999994, null },
-                    { 3, null, 4, 104, null, new DateTime(2026, 7, 4, 11, 35, 13, 366, DateTimeKind.Utc).AddTicks(3708), -12.055, -77.040000000000006, null }
+                    { 1, null, 1, 101, null, new DateTime(2026, 7, 5, 16, 48, 35, 456, DateTimeKind.Utc).AddTicks(5989), -12.0464, -77.0428, null },
+                    { 2, null, 2, 102, null, new DateTime(2026, 7, 5, 16, 48, 35, 456, DateTimeKind.Utc).AddTicks(6866), -12.06, -77.037499999999994, null },
+                    { 3, null, 4, 104, null, new DateTime(2026, 7, 5, 16, 48, 35, 456, DateTimeKind.Utc).AddTicks(6868), -12.055, -77.040000000000006, null }
                 });
 
             migrationBuilder.CreateIndex(
@@ -444,6 +464,12 @@ namespace Scripters.Regula.Platform.Migrations
                 name: "i_x_movements_inventory_id",
                 table: "movements",
                 column: "inventory_id");
+
+            migrationBuilder.CreateIndex(
+                name: "i_x_subscriptions_user_id",
+                table: "subscriptions",
+                column: "user_id",
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -466,6 +492,9 @@ namespace Scripters.Regula.Platform.Migrations
 
             migrationBuilder.DropTable(
                 name: "gas_cylinder_stocks");
+
+            migrationBuilder.DropTable(
+                name: "subscriptions");
 
             migrationBuilder.DropTable(
                 name: "users");

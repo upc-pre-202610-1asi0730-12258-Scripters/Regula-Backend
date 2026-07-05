@@ -1,5 +1,7 @@
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
+using Scripters.Regula.Platform.Billing.Domain.Model.Aggregates;
+using Scripters.Regula.Platform.Billing.Infrastructure.Persistence.EFC.Configuration.Extensions;
 using Scripters.Regula.Platform.CommercialManagement.Infrastructure.Persistence.EFC.Configuration.Extensions;
 using Scripters.Regula.Platform.CommercialManagement.Domain.Model.Entities;
 using Scripters.Regula.Platform.DeliveryTracking.Domain.Model.Aggregates;
@@ -20,6 +22,7 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
     public DbSet<DeliveryResponsible> DeliveryResponsibles { get; set; }
     public DbSet<DeliveryVehicle> DeliveryVehicles { get; set; }
     public DbSet<CommercialDailySale> CommercialDailySales { get; set; }
+    public DbSet<Subscription> Subscriptions { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder builder)
     {
@@ -34,6 +37,7 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
         builder.ApplyCommercialManagementConfiguration();
         builder.ApplyDeliveryTrackingConfiguration();
         builder.ApplyInventoryManagementConfiguration();
+        builder.ApplyBillingConfiguration();
 
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
