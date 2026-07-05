@@ -8,12 +8,28 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace Scripters.Regula.Platform.DeliveryTracking.Interfaces.Rest;
 
+/// <summary>
+/// Controller for retrieving delivery location information.
+/// </summary>
+/// <param name="deliveryLocationQueryService">The delivery location query service for retrieving location data.</param>
 [ApiController]
-[Route("api/v1/deliveries")]
+[Route("api/v1/delivery-tracking/deliveries")]
 [Produces("application/json")]
 public class DeliveryLocationController(IDeliveryLocationQueryService deliveryLocationQueryService) : ControllerBase
 {
-    
+    /// <summary>
+    /// Retrieves the current GPS location of the assigned driver for a specific delivery.
+    /// </summary>
+    /// <remarks>
+    /// If the driver has sent a signal within the last 5 minutes, an active location is returned.
+    /// If more than 6 minutes have elapsed without a signal, a NO_SIGNAL status is returned with the last known position.
+    /// </remarks>
+    /// <param name="id">The unique identifier of the delivery.</param>
+    /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+    /// <returns>An <see cref="IActionResult"/> containing the driver's location (active or no-signal status).</returns>
+    /// <response code="200">Returns the driver location (active or no-signal).</response>
+    /// <response code="404">If the delivery or its location is not found.</response>
+    /// <response code="500">If an unexpected error occurs.</response>
     [HttpGet("{id}/location")]
     [ProducesResponseType(500)]
     [SwaggerOperation(

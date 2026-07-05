@@ -7,11 +7,27 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace Scripters.Regula.Platform.CommercialManagement.Interfaces.Rest;
 
+/// <summary>
+/// Controller for managing customer debt operations.
+/// </summary>
+/// <param name="customerDebtCommandService">The customer debt command service for handling debt-related commands.</param>
 [ApiController]
-[Route("api/v1/customer-debts")]
+[Route("api/v1/commercial-management/customer-debts")]
 [Produces("application/json")]
 public class CustomerDebtsController(ICustomerDebtCommandService customerDebtCommandService) : ControllerBase
 {
+    /// <summary>
+    /// Creates a new customer debt.
+    /// </summary>
+    /// <remarks>
+    /// This operation creates a customer debt without creating a sale, payment, stock movement, or debt movement.
+    /// </remarks>
+    /// <param name="resource">The resource containing details for the new customer debt.</param>
+    /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+    /// <returns>An <see cref="IActionResult"/> containing the newly created customer debt.</returns>
+    /// <response code="201">Returns the newly created customer debt.</response>
+    /// <response code="400">If the request is invalid (e.g., invalid debt amount or description).</response>
+    /// <response code="404">If the specified customer is not found.</response>
     [HttpPost]
     [SwaggerOperation(
         Summary = "Create customer debt",
@@ -44,6 +60,16 @@ public class CustomerDebtsController(ICustomerDebtCommandService customerDebtCom
         return StatusCode(StatusCodes.Status201Created, customerDebtResource);
     }
 
+    /// <summary>
+    /// Creates a payment for an existing customer debt and updates the remaining balance.
+    /// </summary>
+    /// <param name="customerDebtId">The unique identifier of the customer debt to pay.</param>
+    /// <param name="resource">The resource containing details for the payment.</param>
+    /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+    /// <returns>An <see cref="IActionResult"/> containing the newly created customer debt payment.</returns>
+    /// <response code="201">Returns the newly created customer debt payment.</response>
+    /// <response code="400">If the request is invalid (e.g., invalid payment amount, payment exceeds remaining amount, or debt already paid).</response>
+    /// <response code="404">If the specified customer debt or customer is not found.</response>
     [HttpPost("{customerDebtId:int}/payments")]
     [SwaggerOperation(
         Summary = "Create customer debt payment",

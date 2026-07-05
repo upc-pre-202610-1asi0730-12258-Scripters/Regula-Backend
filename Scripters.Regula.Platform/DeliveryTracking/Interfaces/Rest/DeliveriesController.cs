@@ -11,7 +11,7 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace Scripters.Regula.Platform.DeliveryTracking.Interfaces.Rest;
 
 [ApiController]
-[Route("api/v1/deliveries")]
+[Route("api/v1/delivery-tracking/deliveries")]
 [Produces("application/json")]
 public class DeliveriesController(
     IDeliveryQueryService deliveryQueryService,

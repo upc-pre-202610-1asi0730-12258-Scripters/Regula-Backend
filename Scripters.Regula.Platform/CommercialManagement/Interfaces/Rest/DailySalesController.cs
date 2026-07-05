@@ -9,13 +9,24 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace Scripters.Regula.Platform.CommercialManagement.Interfaces.Rest;
 
+/// <summary>
+/// Controller for managing daily sales operations.
+/// </summary>
+/// <param name="dailySaleCommandService">The daily sale command service for handling daily sale-related commands.</param>
+/// <param name="dailySaleQueryService">The daily sale query service for retrieving daily sale information.</param>
 [ApiController]
-[Route("api/v1/daily-sales")]
+[Route("api/v1/commercial-management/daily-sales")]
 [Produces("application/json")]
 public class DailySalesController(
     IDailySaleCommandService dailySaleCommandService,
     IDailySaleQueryService dailySaleQueryService) : ControllerBase
 {
+    /// <summary>
+    /// Retrieves all registered daily sales, ordered by creation date in descending order.
+    /// </summary>
+    /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+    /// <returns>A list of <see cref="DailySaleResource"/> objects.</returns>
+    /// <response code="200">Returns the list of daily sales.</response>
     [HttpGet]
     [SwaggerOperation(
         Summary = "Get all daily sales",
@@ -34,6 +45,19 @@ public class DailySalesController(
         return Ok(dailySaleResources);
     }
 
+    /// <summary>
+    /// Creates a new daily sale.
+    /// </summary>
+    /// <remarks>
+    /// If the payment type is DEBT, this operation also creates the related customer debt.
+    /// It does not update inventory stock.
+    /// </remarks>
+    /// <param name="resource">The resource containing details for the new daily sale.</param>
+    /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+    /// <returns>An <see cref="IActionResult"/> containing the newly created daily sale.</returns>
+    /// <response code="201">Returns the newly created daily sale.</response>
+    /// <response code="400">If the request is invalid (e.g., invalid cylinder type, quantity, unit price, payment type, or missing customer for debt sale).</response>
+    /// <response code="404">If the specified customer is not found.</response>
     [HttpPost]
     [SwaggerOperation(
         Summary = "Create daily sale",
